@@ -1,0 +1,313 @@
+static changeModel(object, modelName) {
+        scene.remove(object.three3dObject.currentModel);
+        scene.remove(object.three3dObject.cloud.currentModel);
+        scene.remove(object.three3dObject.group_pouqie.currentModel);
+        if (object.three3dObject[modelName] != undefined) {
+            object.three3dObject.currentModel = object.three3dObject[modelName];
+            object.currentName = modelName;
+            scene.add(object.three3dObject.currentModel);
+        } else {
+            console.log(modelName)
+            globalModel.load(modelName_url[modelName].objUrl, modelName_url[modelName].mtlUrl, modelName, 1);
+        }
+        window.removeEventListener('click',Model_operation.geoDrag_2, false);
+        scene.remove(control)
+
+    }
+
+    static changeControls() {
+        controls.enabled=false;
+        window.addEventListener('keydown',Model_operation.changeControls2, false);
+        camera.position.set(100, 100, 180);  
+        camera.lookAt(0,0,0);  
+    }
+    static changeControls1(event) {
+            if(event.keyCode ===32) {
+                controls_manyou.enabled = !controls_manyou.enabled;
+                console.log(controls_manyou.enabled);
+            }
+            if(event.keyCode ===86){
+                controls_manyou.lookAt(0,0,0);
+            }
+    }
+
+    static changeControls2(event) {
+      Model_operation.changeControls1(event)
+    }
+
+    static changeControls_1() {
+        controls.enabled=true;  
+        controls_manyou.enabled=false;  
+        camera.position.set(800, 800, 1400);  
+        camera.lookAt(0,0,0);  
+    }
+
+static sectionModel(object, modelName) {
+        scene.remove(object.three3dObject.currentModel);
+        scene.remove(object.three3dObject.cloud.currentModel);
+        scene.remove(object.three3dObject.group_pouqie.currentModel);
+
+        // if (object.three3dObject.group_pouqie[modelName] != undefined) {
+        //     object.three3dObject.group_pouqie.currentModel = object.three3dObject.group_pouqie[modelName];
+        //     scene.add(object.three3dObject.group_pouqie.currentModel);
+        // } else {
+        //     globalModel.load(modelName_url[modelName].objUrl, undefined, modelName, 1, 1);
+        // }
+
+            object.load(modelName_url[modelName].objUrl, undefined, modelName, 1, 1);
+        console.log(planeObjects);
+        console.log(planes);
+    }
+
+static doAddPointForCutting(object, event) {
+        event.preventDefault();
+        raycaster = new THREE.Raycaster();
+        mouseVector = new THREE.Vector3();
+        pointer = new THREE.Vector2();
+        let intersects = Model_operation.getIntersects(event.offsetX, event.offsetY, object);
+
+        if (intersects.length > 0) {
+            let geometry = new THREE.SphereBufferGeometry(5, 50, 50);
+            let material = new THREE.MeshLambertMaterial({
+                color: 0xff0000
+            });
+            let sphere = new THREE.Mesh(geometry, material);
+            sphere.name = "Cutting_Point_" + Model_operation.stratificationInformation.length;
+            scene.add(sphere);
+            sphere.position.set(intersects[0].point.x, intersects[0].point.y, intersects[0].point.z);
+
+            let raycaster_vertical = new THREE.Raycaster();
+            let origin = new THREE.Vector3(intersects[0].point.x, 100000, intersects[0].point.z);
+            let direction = new THREE.Vector3(0, -1, 0);
+            raycaster_vertical.set(origin, direction);
+            //console.log(geoObject);
+            let intersects_vertical = raycaster_vertical.intersectObjects(object.children, true);
+            if (intersects_vertical.length > 0) {
+                Model_operation.stratificationInformation.push(intersects_vertical);
+            }
+            console.log(Model_operation.stratificationInformation);
+        }
+    }
+
+static separation(group) {
+        for (let i = 0; i < 5; i++) {
+            // let material = object1.children[i].material;
+            // material.transparent = true;
+            // material.opacity = 0.4;
+            geoSeparation_h = 2180
+            group.children[i].position.y += (-i+1120) * geoSeparation_h
+        }
+
+static separation2(){   
+        cube1.position.set(0,10,0);
+        cube2.position.set(0,122.5,0);
+        cube3.position.set(0,262.5,0);
+        cube4.position.set(0,437.5,0);
+        cube5.position.set(0,562.5,0);
+    }
+
+static suijikongxishengcheng2(){  
+        getRandomPosition1();
+        createSphere();
+        createSphere2();
+
+        
+        function getRandomPosition1(){  
+            let x = Math.random() * 980 - 490;
+            let y = Math.random() * 100;
+            let z = Math.random() * 400 - 200;
+            return new THREE.Vector3(x,y,z);
+        }
+
+        function createSphere(){
+            let radius1 = Math.random() * 5 + 1;  
+            let SphereGeo1 = new THREE.SphereGeometry( radius1, 200, 200 );  
+            let Material1 = new THREE.MeshBasicMaterial( { color: 0x808080 } );
+            let sphere1 = new THREE.Mesh(SphereGeo1,Material1);
+            sphere1.position.copy(getRandomPosition1());
+            return sphere1;
+        }
+
+        function createSphere2(){
+            let radius2 = Math.random()+2 ;  
+            let SphereGeo2 = new THREE.SphereGeometry( radius2, 200, 200 );  
+            let Material2 = new THREE.MeshBasicMaterial( { color: 0x800080 } );
+            let sphere2 = new THREE.Mesh(SphereGeo2,Material2);
+            sphere2.position.copy(getRandomPosition1());
+            return sphere2;
+        }
+
+        let sphereCount = 10;
+        for (let i = 0; i < sphereCount; i++){
+            let sphere_1 = createSphere();
+            let sphere_2 = createSphere2();
+            scene.add(sphere_1);
+            // scene.add(sphere_2);
+        }
+    }
+
+static zengjiakongxi1() {
+        const objects = [];
+
+        init11();
+
+        function init11() {
+            //camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 10000 );
+            camera.position.set( 800, 800, 1400 );  
+            //camera.lookAt( 0, 0, 0 );
+
+            const rollOverGeo = new THREE.SphereGeometry( 10, 200, 200 );  
+            rollOverMaterial = new THREE.MeshBasicMaterial( { color: 0xff0000, opacity: 0.5, transparent: true } );
+            rollOverMesh = new THREE.Mesh( rollOverGeo, rollOverMaterial );
+            scene.add( rollOverMesh );
+
+            const map = new THREE.TextureLoader().load( '../model/texture/Clay.png' );
+            map.colorSpace = THREE.SRGBColorSpace;
+            cubeGeo = new THREE.SphereGeometry( 10, 200, 200 );
+            cubeMaterial = new THREE.MeshLambertMaterial( { color: 0x808080, map: map } );
+
+            const geometry = new THREE.PlaneGeometry( 111000, 111000 );
+            geometry.rotateX( - Math.PI / 3 );
+            geometry.rotateY( - Math.PI / 3 );
+            geometry.rotateZ( - Math.PI / 3 );
+
+            plane = new THREE.Mesh( geometry, new THREE.MeshBasicMaterial( { visible: false } ) );
+            scene.add( plane );
+
+            objects.push( plane );
+
+            const directionalLight = new THREE.DirectionalLight( 0xffffff, 1 );
+            directionalLight.position.set( 10, 0.75, 0.5 ).normalize();
+            //scene.add( directionalLight );
+
+            document.addEventListener( 'pointermove', onPointerMove );
+            document.addEventListener( 'pointerdown', onPointerDown );
+            document.addEventListener( 'keydown', onDocumentKeyDown );
+            document.addEventListener( 'keyup', onDocumentKeyUp );
+        }
+
+        function onPointerMove( event ) {
+
+            pointer.set( ( event.clientX / window.innerWidth ) * 2 - 1, - ( event.clientY / window.innerHeight ) * 2 + 1 );
+
+            raycaster.setFromCamera( pointer, camera );
+
+            const intersects = raycaster.intersectObjects( objects, false );
+
+            if ( intersects.length > 0 ) {
+
+                const intersect = intersects[ 0 ];
+
+                rollOverMesh.position.copy( intersect.point ).add( intersect.face.normal );
+                rollOverMesh.position.divideScalar( 30 ).floor().multiplyScalar( 30 ).addScalar( 20 );
+
+                render();
+
+            }
+
+        }
+
+        function onPointerDown( event ) {
+
+            pointer.set( ( event.clientX / window.innerWidth ) * 2 - 1, - ( event.clientY / window.innerHeight ) * 2 + 1 );
+
+            raycaster.setFromCamera( pointer, camera );
+
+            const intersects = raycaster.intersectObjects( objects, false );
+
+            if ( intersects.length > 0 ) {
+
+                const intersect = intersects[ 0 ];
+
+                // delete cube
+
+                if ( isShiftDown ) {
+
+                    if ( intersect.object !== plane ) {
+
+                        scene.remove( intersect.object );
+
+                        objects.splice( objects.indexOf( intersect.object ), 1 );
+
+                    }
+
+                    // create cube
+
+                } else {
+
+                    const voxel = new THREE.Mesh( cubeGeo, cubeMaterial );
+                    voxel.position.copy( intersect.point ).add( intersect.face.normal );
+                    voxel.position.divideScalar( 30 ).floor().multiplyScalar( 30 ).addScalar( 20 );
+                    scene.add( voxel );
+
+                    objects.push( voxel );
+
+                }
+
+                render();
+
+            }
+
+        }
+
+        function onDocumentKeyDown( event ) {
+
+            switch ( event.keyCode ) {
+
+                case 16: isShiftDown = true; break;
+
+            }
+
+        }
+
+        function onDocumentKeyUp( event ) {
+
+            switch ( event.keyCode ) {
+
+                case 16: isShiftDown = false; break;
+
+            }
+
+        }
+
+    }
+
+static caozuobianhuan(){
+        intModel1();
+        function intModel1() {
+
+            //OBJLoader.load('../../model/practice1.obj')
+            const geometry = new THREE.BoxGeometry( 1000, 75, 200 );
+            const geometry2 = new THREE.BoxGeometry(1000, 50, 200);
+            const geometry3 = new THREE.BoxGeometry(1000, 150, 200);
+            const geometry4 = new THREE.BoxGeometry(1000, 100, 200);
+            const geometry5 = new THREE.BoxGeometry(1000, 50, 200);
+            const map1 = new THREE.TextureLoader().load( '../model/texture/Clay.png' );
+            const material1 = new THREE.MeshLambertMaterial( { map: map1 } );  
+            const map2 = new THREE.TextureLoader().load( '../model/texture/limestone.png' );
+            const material2 = new THREE.MeshLambertMaterial( { map: map2 } );
+            const map3 = new THREE.TextureLoader().load( '../model/texture/sand2.png' );
+            const material3 = new THREE.MeshLambertMaterial( { map: map3 } );
+            const material4 = new THREE.MeshLambertMaterial( { map: map1 } );
+            const map4 = new THREE.TextureLoader().load( '../model/texture/Soil.png' );
+            const material5 = new THREE.MeshLambertMaterial( { map: map4 } );
+            cube1 = new THREE.Mesh( geometry, material1 );
+            cube2 = new THREE.Mesh( geometry2, material2);
+            cube3 = new THREE.Mesh( geometry3, material3);
+            cube4 = new THREE.Mesh( geometry4, material4);
+            cube5 = new THREE.Mesh( geometry5, material5);
+            cube1.translateY(0);
+            cube2.translateY(62.5);
+            cube3.translateY(162.5);
+            cube4.translateY(287.5);
+            cube5.translateY(362.5);
+            scene.add( cube1 );
+            scene.add( cube2 );
+            scene.add( cube3 );
+            scene.add( cube4 );
+            scene.add( cube5 );
+        }
+
+    }
+
+

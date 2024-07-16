@@ -1,0 +1,32 @@
+import cv2
+import numpy as np
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
+image_path = 'Rock20240125/new/3D1.jpg'  
+gray_image = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
+if gray_image is None:
+    print("Error loading image")
+    exit()
+scale_factor = 1
+kernel_size = (23, 23)
+sigma = 3
+smoothed_image = cv2.GaussianBlur(gray_image, kernel_size, sigma)
+x = np.arange(0, smoothed_image.shape[1], 1)
+y = np.arange(0, smoothed_image.shape[0], 1)
+X, Y = np.meshgrid(x, y)
+Z = smoothed_image * scale_factor
+fig = plt.figure()
+ax = fig.add_subplot(111, projection='3d')
+surf = ax.plot_surface(X, Y, Z, cmap='gray', edgecolor='none')
+ax.set_xlabel('X Pixel')
+ax.set_ylabel('Y Pixel')
+ax.set_zlabel('Gray Value (scaled)')
+ax.set_xlim([0, smoothed_image.shape[1]])
+ax.set_ylim([0, smoothed_image.shape[0]])
+ax.set_zlim([0, Z.max()])
+ax.set_box_aspect([1, 1, 0.2])  
+plt.show(block=True)
+dx = 1  
+dy = 1  
+volume = np.trapz(np.trapz(Z, dx=dx, axis=0), dx=dy, axis=0)
+print(f"The estimated volume of the 3D surface is: {volume} cubic units")
